@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 export default function About() {
   const images = [
@@ -94,7 +95,7 @@ export default function About() {
                   viewport={{ once: true }}
                   className="aspect-square bg-gray-200 rounded-lg overflow-hidden"
                 >
-                  <img
+                  <Image
                     src={image}
                     alt={`Hobby/Travel image ${index + 1}`}
                     className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
