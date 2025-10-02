@@ -3,6 +3,8 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 
+export const dynamic = 'force-dynamic';
+
 export default function Contact() {
   const [formData, setFormData] = useState({
     name: '',

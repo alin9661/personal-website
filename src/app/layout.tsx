@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { AnimatePresence } from "framer-motion";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import ClientLayout from "@/components/ClientLayout";
+
+export const dynamic = 'force-dynamic';
+export const dynamicParams = true;
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,11 +15,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Aaron Lin's - Personal Portfolio",
-  description: "Quantitative Researcher, Python Developer, and Crypto Enthusiast",
-};
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -30,11 +25,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Navbar />
-        <AnimatePresence mode="wait">
-          {children}
-        </AnimatePresence>
-        <Footer />
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );

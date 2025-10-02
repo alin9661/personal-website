@@ -3,6 +3,8 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
+export const dynamic = 'force-dynamic';
+
 export default function About() {
   const images = [
     '/IMG_0963.jpeg',
@@ -41,7 +43,7 @@ export default function About() {
             <h2 className="text-3xl font-semibold">Who I Am</h2>
             <div className="space-y-4 leading-relaxed">
               <p>
-                Hey, I'm Aaron! I'm born and raised in New York City, growing up I
+                Hey, I&apos;m Aaron! I&apos;m born and raised in New York City, growing up I
                 loved reading astronomy books which grew my love for Physics and Math.
                 I started programming during my freshman year of college writing simulations
                 for spring dampening where I decided to change to double major in
@@ -51,7 +53,7 @@ export default function About() {
               </p>
               <p>
                 During this time I also found an interest for trading Options
-                I'm currently doing my masters at NYU in Computer Engineering
+                I&apos;m currently doing my masters at NYU in Computer Engineering
 
               </p>
               <p>
@@ -70,7 +72,7 @@ export default function About() {
               </p>
               <p>
                 My enthusiasm for cryptocurrency stems from its potential to revolutionize
-                traditional financial systems. I'm constantly exploring new developments in
+                traditional financial systems. I&apos;m constantly exploring new developments in
                 blockchain technology and decentralized finance.
               </p>
             </div>

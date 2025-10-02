@@ -1,8 +1,9 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import Scene3D from '@/components/Scene3D';
 import TypingAnimation from '@/components/TypingAnimation';
+
+export const dynamic = 'force-dynamic';
 
 export default function Home() {
   return (
@@ -13,7 +14,7 @@ export default function Home() {
       transition={{ duration: 0.5 }}
       className="min-h-screen flex items-center justify-center relative overflow-hidden"
     >
-      <Scene3D />
+      {/* <Scene3D /> */}
       <div className="z-10 text-center px-4">
         <motion.h1
           initial={{ y: 50, opacity: 0 }}

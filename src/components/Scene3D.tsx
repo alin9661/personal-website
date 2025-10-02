@@ -6,7 +6,7 @@ import { useRef } from 'react';
 import { Mesh } from 'three';
 
 function RotatingIcosahedron() {
-  const meshRef = useRef<Mesh>(null);
+  const meshRef = useRef<Mesh | null>(null);
 
   useFrame((state, delta) => {
     if (meshRef.current) {

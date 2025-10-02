@@ -2,6 +2,8 @@
 
 import { motion } from 'framer-motion';
 
+export const dynamic = 'force-dynamic';
+
 const projects = [
   {
     year: '2024',

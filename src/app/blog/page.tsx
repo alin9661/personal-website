@@ -2,6 +2,8 @@
 
 import { motion } from 'framer-motion';
 
+export const dynamic = 'force-dynamic';
+
 // Mock API data - in a real app, this would come from a CMS
 const blogPosts = [
   {
