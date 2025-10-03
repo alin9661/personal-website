@@ -3,8 +3,6 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
-export const dynamic = 'force-dynamic';
-
 export default function About() {
   const images = [
     '/IMG_0963.jpeg',
@@ -100,6 +98,8 @@ export default function About() {
                   <Image
                     src={image}
                     alt={`Hobby/Travel image ${index + 1}`}
+                    width={400}
+                    height={400}
                     className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                   />
                 </motion.div>
