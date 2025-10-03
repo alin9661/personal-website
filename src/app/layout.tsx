@@ -2,9 +2,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ClientLayout from "@/components/ClientLayout";
 
-export const dynamic = 'force-dynamic';
-export const dynamicParams = true;
-
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],

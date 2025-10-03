@@ -3,8 +3,6 @@
 import { motion } from 'framer-motion';
 import TypingAnimation from '@/components/TypingAnimation';
 
-export const dynamic = 'force-dynamic';
-
 export default function Home() {
   return (
     <motion.div
