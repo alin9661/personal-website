@@ -2,12 +2,16 @@
 
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import Carousel3D from '@/components/Carousel3D';
 
 export default function About() {
-  const images = [
-    '/IMG_0963.jpeg',
-    '/IMG_2021.jpeg',
-    '/IMG_2330.jpeg',
+  const placeholderImages = [
+    'https://picsum.photos/400/400?random=1',
+    'https://picsum.photos/400/400?random=2',
+    'https://picsum.photos/400/400?random=3',
+    'https://picsum.photos/400/400?random=4',
+    'https://picsum.photos/400/400?random=5',
+    'https://picsum.photos/400/400?random=6',
   ];
 
   return (
@@ -76,7 +80,7 @@ export default function About() {
             </div>
           </motion.div>
 
-          {/* Hobbies & Travels Gallery */}
+          {/* Hobbies & Travels 3D Carousel */}
           <motion.div
             initial={{ x: 50, opacity: 0 }}
             whileInView={{ x: 0, opacity: 1 }}
@@ -84,26 +88,13 @@ export default function About() {
             viewport={{ once: true }}
             className="space-y-6"
           >
-            <h2 className="text-3xl font-semibold">Hobbies & Travels</h2>
-            <div className="grid grid-cols-2 gap-4">
-              {images.map((image, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  whileInView={{ scale: 1, opacity: 1 }}
-                  transition={{ duration: 0.6, delay: 0.1 * index }}
-                  viewport={{ once: true }}
-                  className="aspect-square bg-gray-200 rounded-lg overflow-hidden"
-                >
-                  <Image
-                    src={image}
-                    alt={`Hobby/Travel image ${index + 1}`}
-                    width={400}
-                    height={400}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                  />
-                </motion.div>
-              ))}
+            <h2 className="text-3xl font-semibold text-center">Hobbies & Travels</h2>
+            <div className="flex justify-center">
+              <Carousel3D
+                images={placeholderImages}
+                width={180}
+                height={180}
+              />
             </div>
           </motion.div>
         </div>
