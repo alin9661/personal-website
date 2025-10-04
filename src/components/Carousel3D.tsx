@@ -14,26 +14,45 @@ export default function Carousel3D({ images, width = 200, height = 200 }: Carous
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoRotating, setIsAutoRotating] = useState(true);
   const [rotation, setRotation] = useState(0);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const animationRef = useRef<number | null>(null);
 
-  const radius = width * 1.2; // Increased radius for better circular appearance
+  const radius = width * 1.4; // Increased radius for better spacing with 10 images
   const angleStep = (2 * Math.PI) / images.length;
 
   useEffect(() => {
-    if (!isAutoRotating) {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      return;
+    let lastTime = 0;
+    const rotationSpeed = 0.3; // degrees per millisecond for continuous rotation
+
+    const animate = (currentTime: number) => {
+      if (!isAutoRotating) return;
+
+      if (lastTime === 0) lastTime = currentTime;
+      const deltaTime = currentTime - lastTime;
+
+      setRotation(prev => {
+        const newRotation = prev + (rotationSpeed * deltaTime);
+        // Update current index based on rotation
+        const newIndex = Math.floor(((newRotation % 360) / 360) * images.length);
+        setCurrentIndex(newIndex);
+        return newRotation;
+      });
+
+      lastTime = currentTime;
+      animationRef.current = requestAnimationFrame(animate);
+    };
+
+    if (isAutoRotating) {
+      animationRef.current = requestAnimationFrame(animate);
     }
 
-    intervalRef.current = setInterval(() => {
-      setRotation(prev => prev + angleStep * (180 / Math.PI));
-      setCurrentIndex((prev) => (prev + 1) % images.length);
-    }, 4000); // Slower rotation for smoother effect
-
     return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
     };
-  }, [isAutoRotating, images.length, angleStep]);
+  }, [isAutoRotating, images.length]);
 
   const handleImageClick = (index: number) => {
     const targetRotation = -index * angleStep * (180 / Math.PI);
@@ -43,28 +62,33 @@ export default function Carousel3D({ images, width = 200, height = 200 }: Carous
     setTimeout(() => setIsAutoRotating(true), 6000);
   };
 
+  const handleImageHover = (index: number | null) => {
+    setHoveredIndex(index);
+    if (index !== null) {
+      setIsAutoRotating(false);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredIndex(null);
+    setTimeout(() => setIsAutoRotating(true), 1000);
+  };
+
   return (
     <div
       className="relative mx-auto"
       style={{
-        width: width * 3,
-        height: height * 3,
-        perspective: '1200px'
+        width: width * 3.5, // Larger container for 10 images
+        height: height * 3.5,
+        perspective: '1500px' // Deeper perspective for better 3D effect
       }}
-      onMouseEnter={() => setIsAutoRotating(false)}
-      onMouseLeave={() => setIsAutoRotating(true)}
+      onMouseLeave={handleMouseLeave}
     >
       <motion.div
         className="relative w-full h-full"
         style={{
           transformStyle: 'preserve-3d',
-        }}
-        animate={{
-          rotateY: rotation
-        }}
-        transition={{
-          duration: 1.5,
-          ease: [0.25, 0.46, 0.45, 0.94], // Smoother cubic-bezier
+          transform: `rotateY(${rotation}deg)`,
         }}
       >
         {images.map((image, index) => {
@@ -75,8 +99,14 @@ export default function Carousel3D({ images, width = 200, height = 200 }: Carous
 
           // Calculate distance from camera for depth-based scaling
           const distanceFromCamera = Math.abs(z);
-          const scale = Math.max(0.6, 1 - (distanceFromCamera / radius) * 0.4);
-          const opacity = Math.max(0.4, 1 - (distanceFromCamera / radius) * 0.6);
+          const baseScale = Math.max(0.5, 1 - (distanceFromCamera / radius) * 0.5);
+          const opacity = Math.max(0.3, 1 - (distanceFromCamera / radius) * 0.7);
+
+          // Enhanced hover effect - image pops out significantly
+          const isHovered = hoveredIndex === index;
+          const hoverScale = isHovered ? baseScale * 1.8 : baseScale;
+          const hoverZ = isHovered ? z + 150 : z; // Move closer to camera
+          const hoverOpacity = isHovered ? 1 : opacity;
 
           return (
             <motion.div
@@ -87,36 +117,46 @@ export default function Carousel3D({ images, width = 200, height = 200 }: Carous
                 top: '50%',
                 width: width,
                 height: height,
-                transform: `
-                  translate(-50%, -50%)
-                  translate3d(${x}px, 0, ${z}px)
-                  rotateY(${rotateY}deg)
-                  scale(${scale})
-                `,
                 transformStyle: 'preserve-3d',
-                opacity: opacity,
-                zIndex: Math.round((radius - distanceFromCamera) * 10),
+                zIndex: isHovered ? 1000 : Math.round((radius - distanceFromCamera) * 10),
+              }}
+              animate={{
+                x: x,
+                z: hoverZ,
+                scale: hoverScale,
+                opacity: hoverOpacity,
+                rotateY: rotateY,
+              }}
+              transition={{
+                type: "spring",
+                stiffness: 300,
+                damping: 30,
+                duration: 0.4
               }}
               onClick={() => handleImageClick(index)}
-              whileHover={{
-                scale: scale * 1.15,
-                transition: { duration: 0.3 }
-              }}
+              onMouseEnter={() => handleImageHover(index)}
+              onMouseLeave={() => handleImageHover(null)}
             >
               <div
                 className={`
                   relative w-full h-full rounded-xl overflow-hidden shadow-2xl
-                  ${index === currentIndex
+                  ${isHovered
+                    ? 'ring-4 ring-yellow-400 ring-opacity-90 shadow-yellow-500/60'
+                    : index === currentIndex
                     ? 'ring-4 ring-blue-400 ring-opacity-80 shadow-blue-500/50'
                     : 'ring-2 ring-white ring-opacity-20'
                   }
                 `}
                 style={{
-                  filter: index === currentIndex
+                  filter: isHovered
+                    ? 'brightness(1.4) saturate(1.3) contrast(1.1)'
+                    : index === currentIndex
                     ? 'brightness(1.3) saturate(1.2)'
                     : 'brightness(0.85) saturate(0.9)',
-                  transition: 'all 0.5s ease',
-                  boxShadow: index === currentIndex
+                  transition: 'all 0.4s ease',
+                  boxShadow: isHovered
+                    ? '0 30px 60px -15px rgba(255, 193, 7, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.1)'
+                    : index === currentIndex
                     ? '0 25px 50px -12px rgba(59, 130, 246, 0.5)'
                     : '0 10px 25px -5px rgba(0, 0, 0, 0.3)',
                 }}
